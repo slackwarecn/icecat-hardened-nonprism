@@ -18,8 +18,10 @@ OUTPUT=${OUTPUT:-/tmp}
 # Ignore the compilation configure options.
 # Ignore file/dir cleaning and making.
 
-set -e
+set -eu
 
+rm -r $PKG
+mkdir $PKG
 cd $PKG
 
 # Download the ublock add-on.
