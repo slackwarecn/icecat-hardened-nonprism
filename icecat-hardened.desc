@@ -1,4 +1,4 @@
 	echo "..."
-	echo "Note: It is now required to use iceweasel-hardened or iceweasel binaries separately. They cannot run at the same time, but can be ran interchangebly. Additionally, some user.js preferences may be overriden in your normal profile due to Mozilla bug #1322624. You can re-enable these in about:config."
+	echo "This is a script which enhances icecat: to be started under firejail; to be equipped with add-ons of Noscripts, no-resources-leak, ublock, which help to protect the user's privacy.
+	echo "Note: It is now required to use icecat-hardened or icecat binaries separately. They cannot run at the same time, but can be ran interchangebly. Additionally, some user.js preferences may be overriden in your normal profile due to Mozilla bug #1322624. You can re-enable these in about:config."
 	echo "..."
-	echo "Nota: ahora se require usar los binarios iceweasel-hardened o iceweasel de forma separada. No pueden ser usados al mismo tiempo, pero sí de manera alterna. Además, algunas preferencias de user.js pueden ser anuladas en tu perfil normal debido al error #1322624 de Mozilla. Puede volver a habilitarlos en about:config."
