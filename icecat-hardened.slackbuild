@@ -51,8 +51,6 @@ OUTPUT=${OUTPUT:-/tmp}
 
 set -eu
 
-rm -rf $TMP
-mkdir -p $TMP
 rm -rf $PKG
 mkdir -p $PKG
 cd $PKG
@@ -64,7 +62,7 @@ SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/607454/ublock_origin-$
 install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/uBlock0@raymondhill.net.xpi
 
 # Download the no-resource-uri-leak add-on.
-NRUL=0.2.1
+NRUL=1.1.0
 SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/706000/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi")
 /usr/bin/wget -c -t 5 $SOURCE || true
 install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi
