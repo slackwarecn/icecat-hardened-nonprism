@@ -1,16 +1,47 @@
 #!/bin/bash
 
+# Slackware build script for icecat-hardened which make your icecat start 
+# under firejail and eqquiped with several privacy-enhanced add-ons: 
+# Noscript, No-resource-uri-leak, ublock and httpseverywhere.
+
+# Written by MDrights <mdrights@tutanota.de>
+# With some code copy-pasted from the PKGBUILDs (iceweasel-hardened-
+# preferences et al) in Parabola GNU/linux-libre.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version, with the following exception:
+# the text of the GPL license may be omitted.
+
+# This program is distributed in the hope that it will be useful, but
+# without any warranty; without even the implied warranty of
+# merchantability or fitness for a particular purpose. Compiling,
+# interpreting, executing or merely reading the text of the program
+# may result in lapses of consciousness and/or very being, up to and
+# including the end of all existence and the Universe as we know it.
+# See the GNU General Public License for more details.
+
+# You may have received a copy of the GNU General Public License along
+# with this program (most likely, a file named COPYING).  If not, see
+# <http://www.gnu.org/licenses/>.
+
+# NOTE: You don't need to run it as root.
+
+# Check icecat version.
+ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' || (echo "Error: You didn't install icecat yet!" ; exit 1)
+ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }')
 
 PRGNAM=icecat-hardened
 VERSION=${VERSION:-0.1}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
-# Ignore the arch identification.
+# Ignore the arch identification since we assume you are using 64bit OS :).
 ARCH=x86_64
 
 CWD=$(pwd)
-SRCDIR="/usr/local/src/$PRGNAM"
+SRCDIR="/usr/local/src/$PRGNAM-preferences"
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
@@ -20,30 +51,32 @@ OUTPUT=${OUTPUT:-/tmp}
 
 set -eu
 
-rm -r $PKG
-mkdir $PKG
+rm -rf $TMP
+mkdir -p $TMP
+rm -rf $PKG
+mkdir -p $PKG
 cd $PKG
 
 # Download the ublock add-on.
 UBLOCK=1.11.4
 SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/607454/ublock_origin-${UBLOCK}-an+fx+sm+tb.xpi")
-/usr/bin/wget -c $SOURCE
-install -Dm755 "${SOURCE##*/}" $PKG/usr/lib/icecat/browser/extensions/uBlock0@raymondhill.net.xpi
+/usr/bin/wget -c -t 5 $SOURCE || true; echo "The add-on ublock may not be downloaded."
+install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/uBlock0@raymondhill.net.xpi
 
 # Download the no-resource-uri-leak add-on.
-NRUL=1.1.0
+NRUL=0.2.1
 SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/706000/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi")
-/usr/bin/wget -c $SOURCE
-install -Dm755 "${SOURCE##*/}" $PKG/usr/lib/icecat/browser/extensions/no_resource_uri_leak-$PKG-an+tb+sm+fx.xpi
+/usr/bin/wget -c -t 5 $SOURCE || true
+install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi
 
 # Download the noscript add-on.
-NS=5.0.2
+NS=5.0.5
 SOURCE=("https://secure.informaction.com/download/releases/noscript-${NS}.xpi")
-/usr/bin/wget -c $SOURCE
+/usr/bin/wget -c -t 5 $SOURCE || true
 unzip -qqo "noscript-${NS}.xpi" -d "noscript-${NS}"
 
 _extension_id="$(sed -n '/.*<em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' noscript-${NS}/install.rdf)"
-_extension_dest="$PKG/usr/lib/icecat/browser/extensions/${_extension_id}"
+_extension_dest="$PKG/usr/lib64/icecat-$ICVER/browser/extensions/${_extension_id}"
 
   if grep '<em:unpack>true</em:unpack>' noscript-${NS}/install.rdf > /dev/null; then
     install -dm755 "${_extension_dest}"
@@ -58,10 +91,12 @@ _extension_dest="$PKG/usr/lib/icecat/browser/extensions/${_extension_id}"
 # Ignore the man/info pages copying.
 
 cd $SRCDIR
-install -Dm755 icecat-hardened.sh $PKG/usr/bin/iceweasel-hardened
+install -Dm755 icecat-hardened.sh $PKG/usr/bin/icecat-hardened
 
 mkdir -p $PKG/install
-cat $SRCDIR/slack-desc > $PKG/install/slack-desc
+cat $SRCDIR/icecat-hardened.desc > $PKG/install/icecat-hardened.desc
+cat $SRCDIR/icecat-hardened.info > $PKG/install/icecat-hardened.info
+cat $SRCDIR/icecat-hardened.slackbuild > $PKG/install/icecat-hardened.slackbuild
 cat $SRCDIR/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG

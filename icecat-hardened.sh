@@ -1,4 +1,31 @@
 #!/bin/sh
+# Slackware build script for icecat-hardened which make your icecat start
+# under firejail and eqquiped with several privacy-enhanced add-ons:
+# Noscript, No-resource-uri-leak, ublock and httpseverywhere.
+
+# Written by MDrights <mdrights@tutanota.de>
+# With some code copy-pasted from the PKGBUILDs (iceweasel-hardened-
+# preferences et al) in Parabola GNU/linux-libre.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version, with the following exception:
+# the text of the GPL license may be omitted.
+
+# This program is distributed in the hope that it will be useful, but
+# without any warranty; without even the implied warranty of
+# merchantability or fitness for a particular purpose. Compiling,
+# interpreting, executing or merely reading the text of the program
+# may result in lapses of consciousness and/or very being, up to and
+# including the end of all existence and the Universe as we know it.
+# See the GNU General Public License for more details.
+
+# You may have received a copy of the GNU General Public License along
+# with this program (most likely, a file named COPYING).  If not, see
+# <http://www.gnu.org/licenses/>.
+
+# NOTE: You don't need to run it as root.
 
 ##############################################
 # Icecat-Hardened Jail and Cleaner Script #
