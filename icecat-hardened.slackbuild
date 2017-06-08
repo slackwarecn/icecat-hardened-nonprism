@@ -2,7 +2,7 @@
 
 # Slackware build script for icecat-hardened which make your icecat start 
 # under firejail and eqquiped with several privacy-enhanced add-ons: 
-# Noscript, No-resource-uri-leak, ublock and httpseverywhere.
+# Noscript, ublock and httpseverywhere.
 
 # Written by MDrights <mdrights@tutanota.de>
 # With some code copy-pasted from the PKGBUILDs (iceweasel-hardened-
@@ -33,7 +33,8 @@ ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' || (echo "Error: You did
 ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }')
 
 # Check if firejail is installed.
-if ! $(ls /var/log/packages/firejail 2>/dev/null); then echo "Error: You didn't install firejail yet! quit..."; exit 1; fi
+a=$(ls /var/log/packages/firejail* 2>/dev/null)
+if [ "$a" = "" ] ; then echo "Error: You didn't install firejail yet! quit..."; exit 1; fi
 
 
 PRGNAM=icecat-hardened
@@ -66,10 +67,10 @@ SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/607454/ublock_origin-$
 install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/uBlock0@raymondhill.net.xpi
 
 # Download the no-resource-uri-leak add-on.
-NRUL=1.1.0
-SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/706000/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi
+#NRUL=1.1.0
+#SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/706000/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi")
+#/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+#install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi
 
 # Download the noscript add-on.
 NS=5.0.5
@@ -89,27 +90,27 @@ _extension_dest="$PKG/usr/lib64/icecat-$ICVER/browser/extensions/${_extension_id
   fi
 
 # Download the Disable-WebRTC add-on.
-SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/happy-bonobo-disable-webrtc/addon-497366-latest.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/disable-webrtc-497366-latest.xpi
+#SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/happy-bonobo-disable-webrtc/addon-497366-latest.xpi")
+#/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+#install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/disable-webrtc-497366-latest.xpi
 
 # Download the User-Agent Switcher.
-SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/user-agent-switcher-firefox/addon-578976-latest.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/user-agent-switcher-578976-latest.xpi
+#SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/user-agent-switcher-firefox/addon-578976-latest.xpi")
+#/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+#install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/user-agent-switcher-578976-latest.xpi
 
 
 # ignore the binary stripping since I don't need for this.
 # Ignore the man/info pages copying.
 
-cd $SRCDIR
+cd $CWD
 install -Dm755 icecat-hardened.sh $PKG/usr/bin/icecat-hardened
 
 mkdir -p $PKG/install
-cat $SRCDIR/icecat-hardened.desc > $PKG/install/icecat-hardened.desc
-cat $SRCDIR/icecat-hardened.info > $PKG/install/icecat-hardened.info
-cat $SRCDIR/icecat-hardened.slackbuild > $PKG/install/icecat-hardened.slackbuild
-cat $SRCDIR/doinst.sh > $PKG/install/doinst.sh
+cat icecat-hardened.desc > $PKG/install/icecat-hardened.desc
+cat icecat-hardened.info > $PKG/install/icecat-hardened.info
+cat icecat-hardened.slackbuild > $PKG/install/icecat-hardened.slackbuild
+cat doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}

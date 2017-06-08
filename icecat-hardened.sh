@@ -1,7 +1,7 @@
 #!/bin/sh
 # Slackware build script for icecat-hardened which make your icecat start
 # under firejail and eqquiped with several privacy-enhanced add-ons:
-# Noscript, No-resource-uri-leak, ublock and httpseverywhere.
+# Noscript, ublock and httpseverywhere.
 
 # Written by MDrights <mdrights@tutanota.de>
 # With some code copy-pasted from the PKGBUILDs (iceweasel-hardened-
