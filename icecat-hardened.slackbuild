@@ -32,6 +32,10 @@
 ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' || (echo "Error: You didn't install icecat yet!" ; exit 1)
 ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }')
 
+# Check if firejail is installed.
+if ! $(ls /var/log/packages/firejail 2>/dev/null); then echo "Error: You didn't install firejail yet! quit..."; exit 1; fi
+
+
 PRGNAM=icecat-hardened
 VERSION=${VERSION:-0.1}
 BUILD=${BUILD:-1}
@@ -64,13 +68,13 @@ install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/u
 # Download the no-resource-uri-leak add-on.
 NRUL=1.1.0
 SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/706000/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true
+/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
 install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi
 
 # Download the noscript add-on.
 NS=5.0.5
 SOURCE=("https://secure.informaction.com/download/releases/noscript-${NS}.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true
+/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
 unzip -qqo "noscript-${NS}.xpi" -d "noscript-${NS}"
 
 _extension_id="$(sed -n '/.*<em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' noscript-${NS}/install.rdf)"
@@ -83,6 +87,16 @@ _extension_dest="$PKG/usr/lib64/icecat-$ICVER/browser/extensions/${_extension_id
   else
     install -Dm644 noscript-${NS}.xpi "${_extension_dest}.xpi"
   fi
+
+# Download the Disable-WebRTC add-on.
+SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/happy-bonobo-disable-webrtc/addon-497366-latest.xpi")
+/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/disable-webrtc-497366-latest.xpi
+
+# Download the User-Agent Switcher.
+SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/user-agent-switcher-firefox/addon-578976-latest.xpi")
+/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+install -Dm755 "${SOURCE##*/}" $PKG/usr/lib64/icecat-$ICVER/browser/extensions/user-agent-switcher-578976-latest.xpi
 
 
 # ignore the binary stripping since I don't need for this.
