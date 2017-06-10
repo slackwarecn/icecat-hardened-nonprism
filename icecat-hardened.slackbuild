@@ -48,6 +48,7 @@ ARCH=x86_64
 CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
+DOWNDIR="$PKG/downloads"
 OUTPUT=${OUTPUT:-/tmp}
 DESTDIR=$(find $HOME/.mozilla/icecat -type d -name "extensions")
 
@@ -58,12 +59,13 @@ set -eu
 
 rm -rf $PKG
 mkdir -p $PKG
+mkdir -p $DOWNDIR
 cd $PKG
 
 # Download the ublock add-on.
 UBLOCK=1.11.4
 SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/607454/ublock_origin-${UBLOCK}-an+fx+sm+tb.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This add-on may not be downloaded."
+/usr/bin/wget -c -O $DOWNDIR -t 5 $SOURCE || true; echo "This add-on may not be downloaded."
 install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/uBlock0@raymondhill.net.xpi
 
 # Download the no-resource-uri-leak add-on.
@@ -75,7 +77,7 @@ install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/uBlock0@raymondhill.net.xpi
 # Download the noscript add-on.
 NS=5.0.5
 SOURCE=("https://secure.informaction.com/download/releases/noscript-${NS}.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+/usr/bin/wget -c -O $DOWNDIR -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
 unzip -qqo "noscript-${NS}.xpi" -d "noscript-${NS}"
 
 _extension_id="$(sed -n '/.*<em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' noscript-${NS}/install.rdf)"
@@ -90,13 +92,13 @@ _extension_dest="$PKG/usr/lib64/icecat-$ICVER/browser/extensions/${_extension_id
   fi
 
 # Download the Disable-WebRTC add-on.
-SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/happy-bonobo-disable-webrtc/addon-497366-latest.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/jid1-5Fs7iTLscUaZBgwr@jetpack.xpi
+#SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/happy-bonobo-disable-webrtc/addon-497366-latest.xpi")
+#/usr/bin/wget -c -O $DOWNDIR -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+#install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/jid1-5Fs7iTLscUaZBgwr@jetpack.xpi
 
 # Download the User-Agent Switcher.
 SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/user-agent-switcher-firefox/addon-578976-latest.xpi")
-/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
+/usr/bin/wget -c -O $DOWNDIR -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
 install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/jid1-kyxEAcWua7BEKq@jetpack.xpi
 
 
