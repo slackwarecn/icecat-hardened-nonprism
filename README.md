@@ -10,12 +10,9 @@
 - 下載並安裝幾個保護隱私的必備 add-on（插件）：
 	- Noscript
 	- ublock origin
-	- no-resource-uri-leak
+	- User-Agent Switcher
 	- (icecat 52 已自帶的 httpseverywhere)
 
-- 後續（可能）新增：
-	- disable webRTC
-	- anything else?
 
 **不必用root執行該腳本**
 
@@ -23,7 +20,9 @@ _就做了這麼一點小事，謝謝大家（其實還是挺方便部署的，�
 
 <hr>
 
-This is a script which enhances icecat: to be started under firejail; to be equipped with add-ons of Noscripts, ublock, which help to protect the user's privacy.
+This is a script which enhances icecat: to be started under firejail; to be equipped with add-ons of Noscripts, ublock and User-agent Switcher, which help to protect the user's privacy.
+
+You sould have icecat and firejail installed.
 
 **Note**: It is now required to use icecat-hardened or icecat binaries separately. They cannot run at the same time, but can be ran interchangebly. Additionally, some user.js preferences may be overriden in your normal profile due to Mozilla bug #1322624. You can re-enable these in about:config.
 
