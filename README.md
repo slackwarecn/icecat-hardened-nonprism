@@ -28,3 +28,4 @@ You sould have icecat and firejail installed.
 
 You donot need to run it as root.
 
+**CONTACT**: MDrights <mdrights at tutanota dot de>
