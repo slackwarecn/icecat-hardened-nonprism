@@ -7,7 +7,8 @@
 ### 加固什麼？
 
 - 用firejail沙盒啓動（因此你需要先安裝[firejail](https://slackbuilds.org/repository/14.2/system/firejail) <- 安裝腳本在這裏。
-- 下載並安裝幾個保護隱私的必備 add-on（插件）：（然而后来发现不是所有插件都能以这种方式安装；你们只能手动安装了）
+- 一些隐私加强的设置（如 cookie什么的）
+- 下載並安裝幾個保護隱私的必備 add-on（插件）：（然而后来发现不是所有插件都能以这种方式安装；你们只能手动安装其他的插件了）
 	- Noscript
 	- (icecat 52 已自帶的 httpseverywhere)
 
