@@ -34,14 +34,14 @@ echo "Closing any other instances of Icecat to avoid crashes..."
 pkill -x icecat
 wait
 # echo "Copying Hardened Prefs..."
-# cp /usr/lib/iceweasel/browser/defaults/preferences/iceweasel-branding.js /usr/lib/iceweasel/browser/defaults/preferences/firefox-branding.js
+# cp /usr/lib/iceweasel/browser/defaults/preferences/iceweasel-branding.js /usr/lib/iceweasel/browser/defaults/preferences/icecat-branding.js
 # wait
 echo "Waking the Icecat..."
 
 # Trap cleaner function for Icecat exit cleaning
 #function finish {
 # echo "Removing hardened preferences..."
-# echo "" > /usr/lib/iceweasel/browser/defaults/preferences/firefox-branding.js
+# echo "" > /usr/lib/iceweasel/browser/defaults/preferences/icecat-branding.js
 #    }
 
 ## Firejail Iceweasel startup

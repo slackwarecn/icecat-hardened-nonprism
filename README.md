@@ -7,10 +7,8 @@
 ### 加固什麼？
 
 - 用firejail沙盒啓動（因此你需要先安裝[firejail](https://slackbuilds.org/repository/14.2/system/firejail) <- 安裝腳本在這裏。
-- 下載並安裝幾個保護隱私的必備 add-on（插件）：
+- 下載並安裝幾個保護隱私的必備 add-on（插件）：（然而后来发现不是所有插件都能以这种方式安装；你们只能手动安装了）
 	- Noscript
-	- ublock origin
-	- User-Agent Switcher
 	- (icecat 52 已自帶的 httpseverywhere)
 
 
@@ -20,7 +18,7 @@ _就做了這麼一點小事，謝謝大家（其實還是挺方便部署的，�
 
 <hr>
 
-This is a script which enhances icecat: to be started under firejail; to be equipped with add-ons of Noscripts, ublock and User-agent Switcher, which help to protect the user's privacy.
+This is a script which enhances icecat: to be started under firejail; to be equipped with add-ons of Noscripts, which help to protect the user's privacy. (a later study found that not every addon can be installed under such way. So you may install the addons you need by your hand :)
 
 You sould have icecat and firejail installed.
 

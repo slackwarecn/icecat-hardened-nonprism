@@ -28,9 +28,13 @@
 
 # NOTE: You don't need to run it as root.
 
+
+set -eu
+
 # Check icecat version.
 ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' || (echo "Error: You didn't install icecat yet!" ; exit 1)
-ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }')
+#ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }')
+ICVER=52.1.0
 
 # Check if firejail is installed.
 a=$(ls /var/log/packages/firejail* 2>/dev/null)
@@ -38,92 +42,50 @@ if [ "$a" = "" ] ; then echo "Error: You didn't install firejail yet! quit..."; 
 
 
 PRGNAM=icecat-hardened
-VERSION=${VERSION:-0.1.2}
-BUILD=${BUILD:-4}
-TAG=${TAG:-_SBo}
+VERSION=${VERSION:-0.2.0}
+BUILD=${BUILD:-10}
+TAG=${TAG:-_MD}
 
 # Ignore the arch identification since we assume you are using 64bit OS :).
 ARCH=x86_64
 
 CWD=$(pwd)
-TMP=${TMP:-/tmp/SBo}
+TMP=${TMP:-/tmp}
 PKG=$TMP/package-$PRGNAM
-DOWNDIR="$PKG/downloads"
 OUTPUT=${OUTPUT:-/tmp}
-DESTDIR=$(find $HOME/.mozilla/icecat -type d -name "extensions")
-
-# Ignore the compilation configure options.
-# Ignore file/dir cleaning and making.
-
-set -eu
-
-if [ -z "$DESTDIR" ]; then 
-	BASEDIR="$(dirname $(find $HOME/.mozilla/icecat/  -name "extension*") | sed -n '1'p)"
-	DESTDIR="$BASEDIR/extensions"
-	mkdir -p $DESTDIR
-fi
+DESTDIR="/usr/lib64/icecat-${ICVER}/browser/extensions"
 
 
 rm -rf $PKG
 mkdir -p $PKG
-mkdir -p $DOWNDIR
 mkdir -p $PKG/$DESTDIR
-cd $DOWNDIR
 
 
-# Download the ublock add-on.
-UBLOCK=1.11.4
-SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/607454/ublock_origin-${UBLOCK}-an+fx+sm+tb.xpi")
-/usr/bin/wget -c -P $DOWNDIR -t 5 $SOURCE || true; echo "This add-on may not be downloaded."
-install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/uBlock0@raymondhill.net.xpi
-
-# Download the no-resource-uri-leak add-on.
-#NRUL=1.1.0
-#SOURCE=("https://addons.cdn.mozilla.net/user-media/addons/706000/no_resource_uri_leak-${NRUL}-an+tb+sm+fx.xpi")
-#/usr/bin/wget -c -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-#install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/@no-resource-uri-leak.xpi
-
-# Download the noscript add-on.
-NS=5.0.5
-SOURCE=("https://secure.informaction.com/download/releases/noscript-${NS}.xpi")
-/usr/bin/wget -c -P $DOWNDIR -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-unzip -qqo "noscript-${NS}.xpi" -d "noscript-${NS}"
-
-_extension_id="$(sed -n '/.*<em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' noscript-${NS}/install.rdf)"
-_extension_dest="$PKG/usr/lib64/icecat-$ICVER/browser/extensions/${_extension_id}"
-
-  if grep '<em:unpack>true</em:unpack>' noscript-${NS}/install.rdf > /dev/null; then
-    install -dm755 "${_extension_dest}"
-    cp -R noscript-${NS}/* "${_extension_dest}"
-    chmod -R ugo+rX "${_extension_dest}"
-  else
-    install -Dm644 noscript-${NS}.xpi "${_extension_dest}.xpi"
-  fi
-
-# Download the Disable-WebRTC add-on.
-#SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/happy-bonobo-disable-webrtc/addon-497366-latest.xpi")
-#/usr/bin/wget -c -P $DOWNDIR -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-#install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/jid1-5Fs7iTLscUaZBgwr@jetpack.xpi
-
-# Download the User-Agent Switcher.
-SOURCE=("https://addons.mozilla.org/firefox/downloads/latest/user-agent-switcher-firefox/addon-578976-latest.xpi")
-/usr/bin/wget -c -P $DOWNDIR -t 5 $SOURCE || true; echo "This addon may not be downloaded successfully."
-install -Dm755 "${SOURCE##*/}" $PKG/$DESTDIR/jid1-kyxEAcWua7BEKq@jetpack.xpi
-
-
-# ignore the binary stripping since I don't need for this.
-# Ignore the man/info pages copying.
+# Please download the add-ons by hand if you have not yet (see download-addons.sh). However it seems some addons isn't compatible for doing in this way.
 
 cd $CWD
+install -Dm644 noscript-5.0.5.xpi $PKG/$DESTDIR/noscript-5.0.5.xpi
+# install -Dm755 ublock_origin-1.11.4-an+fx+sm+tb.xpi $PKG/$DESTDIR/ublock_origin-1.11.4-an+fx+sm+tb.xpi
+# install -Dm755 user-agent-switcher.xpi $PKG/$DESTDIR/user-agent-switcher.xpi
+
 install -Dm755 icecat-hardened.sh $PKG/usr/bin/icecat-hardened
 
 mkdir -p $PKG/usr/share/$PRGNAM
-cat icecat-hardened.desc > $PKG/usr/share/$PRGNAM/icecat-hardened.desc
+cat slack-desc > $PKG/usr/share/$PRGNAM/slack-desc
 cat icecat-hardened.info > $PKG/usr/share/$PRGNAM/icecat-hardened.info
 cat icecat-hardened.slackbuild > $PKG/usr/share/$PRGNAM/icecat-hardened.slackbuild
-cat doinst.sh > $PKG/usr/share/$PRGNAM/doinst.sh
 
-rm -rf $DOWNDIR
+# Will copy the config files to the system's conf dir, then copied to user's config dir by doinst.sh.
+
+install -Dm 644 extensions.ini $PKG/usr/lib64/icecat-${ICVER}/defaults/extensions.ini
+install -Dm 644 user.js $PKG/usr/lib64/icecat-${ICVER}/defaults/user.js
+mkdir -p $PKG/install
+cat doinst.sh > $PKG/install/doinst.sh
+
+# Desktop integration
+mkdir -p $PKG/usr/share/applications
+cat $CWD/icecat-hardened.desktop > $PKG/usr/share/applications/icecat-hardened.desktop
+
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}
 
