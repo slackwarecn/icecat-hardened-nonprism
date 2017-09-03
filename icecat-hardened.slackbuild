@@ -33,8 +33,8 @@ set -eu
 
 # Check icecat version.
 ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' || (echo "Error: You didn't install icecat yet!" ; exit 1)
-#ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }')
-ICVER=52.1.0
+ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' | sed -n '1 p')
+# ICVER=52.1.0
 
 # Check if firejail is installed.
 a=$(ls /var/log/packages/firejail* 2>/dev/null)
@@ -43,7 +43,7 @@ if [ "$a" = "" ] ; then echo "Error: You didn't install firejail yet! quit..."; 
 
 PRGNAM=icecat-hardened
 VERSION=${VERSION:-0.2.0}
-BUILD=${BUILD:-10}
+BUILD=${BUILD:-11}
 TAG=${TAG:-_MD}
 
 # Ignore the arch identification since we assume you are using 64bit OS :).
@@ -64,7 +64,7 @@ mkdir -p $PKG/$DESTDIR
 # Please download the add-ons by hand if you have not yet (see download-addons.sh). However it seems some addons isn't compatible for doing in this way.
 
 cd $CWD
-install -Dm644 noscript-5.0.5.xpi $PKG/$DESTDIR/noscript-5.0.5.xpi
+install -Dm644 noscript-5.0.5.xpi ${PKG}/${DESTDIR}/noscript-5.0.5.xpi
 # install -Dm755 ublock_origin-1.11.4-an+fx+sm+tb.xpi $PKG/$DESTDIR/ublock_origin-1.11.4-an+fx+sm+tb.xpi
 # install -Dm755 user-agent-switcher.xpi $PKG/$DESTDIR/user-agent-switcher.xpi
 
