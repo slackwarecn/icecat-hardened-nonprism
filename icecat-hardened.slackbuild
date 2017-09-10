@@ -61,7 +61,7 @@ mkdir -p $PKG
 mkdir -p $PKG/$DESTDIR
 
 
-# Please download the add-ons by hand if you have not yet (see download-addons.sh). However it seems some addons isn't compatible for doing in this way.
+# Please download the add-ons by hand if you have not yet (see download-addons.sh). However it seems some addons isn't compatible for doing in this way. And please BE AWARE of the addons you installed. Do it at your own risk.
 
 cd $CWD
 install -Dm644 noscript-5.0.5.xpi ${PKG}/${DESTDIR}/noscript-5.0.5.xpi
