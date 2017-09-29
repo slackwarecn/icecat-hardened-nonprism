@@ -77,8 +77,9 @@ cat icecat-hardened.slackbuild > $PKG/usr/share/$PRGNAM/icecat-hardened.slackbui
 
 # Will copy the config files to the system's conf dir, then copied to user's config dir by doinst.sh.
 
-install -Dm 644 extensions.ini $PKG/usr/lib64/icecat-${ICVER}/defaults/extensions.ini
-install -Dm 644 user.js $PKG/usr/lib64/icecat-${ICVER}/defaults/user.js
+mkdir -p /usr/lib64/icecat-${ICVER}/defaults/pref/
+install -Dm 644 extensions.ini $PKG/usr/lib64/icecat-${ICVER}/defaults/pref/extensions.ini
+install -Dm 644 user.js $PKG/usr/lib64/icecat-${ICVER}/defaults/pref/user.js
 mkdir -p $PKG/install
 cat doinst.sh > $PKG/install/doinst.sh
 

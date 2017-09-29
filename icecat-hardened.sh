@@ -33,7 +33,6 @@
 echo "Closing any other instances of Icecat to avoid crashes..."
 pkill -x icecat
 wait
-# echo "Copying Hardened Prefs..."
 # cp /usr/lib/iceweasel/browser/defaults/preferences/iceweasel-branding.js /usr/lib/iceweasel/browser/defaults/preferences/icecat-branding.js
 # wait
 echo "Waking the Icecat..."
@@ -44,10 +43,18 @@ echo "Waking the Icecat..."
 # echo "" > /usr/lib/iceweasel/browser/defaults/preferences/icecat-branding.js
 #    }
 
-## Firejail Iceweasel startup
+## Firejail icecat startup
 ## /usr/bin/firejail --profile=/etc/firejail/icecat.profile --noroot --nogroups --caps.drop=all --private-etc=nsswitch.conf,resolv.conf  --private-bin=bash,icecat --private-tmp --private-dev /usr/bin/icecat --private-window
 
 /usr/bin/firejail --profile=/etc/firejail/icecat.profile /usr/bin/icecat 1>$HOME/.firejail-icecat.output 2>&1
 
-## Exiting Iceweasel triggers the trap
+# Copying...$ICVER is the version number of icecat; $INIDIR is the profile directory.
+echo "Copying Hardened Prefs..."
+ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' | sed -n '1 p')
+INIDIR=$(find $HOME/.mozilla/icecat -type d -name "*.default")
+
+cp /usr/lib64/icecat-${ICVER}/defaults/pref/user.js ${INIDIR}/
+cp /usr/lib64/icecat-${ICVER}/defaults/pref/extensions.ini ${INIDIR}/
+
+## Exiting Icecat triggers the trap
 #trap finish EXIT
