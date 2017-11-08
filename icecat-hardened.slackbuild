@@ -34,7 +34,7 @@ set -eu
 # Check icecat version.
 ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' || (echo "Error: You didn't install icecat yet!" ; exit 1)
 ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' | sed -n '1 p')
-# ICVER=52.1.0
+# ICVER=52.3.0
 
 # Check if firejail is installed.
 a=$(ls /var/log/packages/firejail* 2>/dev/null)
@@ -42,8 +42,8 @@ if [ "$a" = "" ] ; then echo "Error: You didn't install firejail yet! quit..."; 
 
 
 PRGNAM=icecat-hardened
-VERSION=${VERSION:-0.2.0}
-BUILD=${BUILD:-11}
+VERSION=${VERSION:-0.3.0}
+BUILD=${BUILD:-2}
 TAG=${TAG:-_MD}
 
 # Ignore the arch identification since we assume you are using 64bit OS :).
@@ -53,7 +53,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
-DESTDIR="/usr/lib64/icecat-${ICVER}/browser/extensions"
+DESTDIR="usr/lib64/icecat-${ICVER}/browser/extensions"
 
 
 rm -rf $PKG
@@ -63,25 +63,27 @@ mkdir -p $PKG/$DESTDIR
 
 # Please download the add-ons by hand if you have not yet (see download-addons.sh). However it seems some addons isn't compatible for doing in this way. And please BE AWARE of the addons you installed. Do it at your own risk.
 
-cd $CWD
-install -Dm644 noscript-5.0.5.xpi ${PKG}/${DESTDIR}/noscript-5.0.5.xpi
-# install -Dm755 ublock_origin-1.11.4-an+fx+sm+tb.xpi $PKG/$DESTDIR/ublock_origin-1.11.4-an+fx+sm+tb.xpi
-# install -Dm755 user-agent-switcher.xpi $PKG/$DESTDIR/user-agent-switcher.xpi
+# Will firstly copy user specific config and addons to the icecat install dir, then copy them to user's own dir by icecat-hardened.sh.  This due to that user's icecat dir does not exist before first run.
 
-install -Dm755 icecat-hardened.sh $PKG/usr/bin/icecat-hardened
+
+cd $CWD
+install -Dm644 https-everywhere-eff\@eff.org.xpi ${PKG}/${DESTDIR}/https-everywhere-eff\@eff.org.xpi
+install -Dm644 jid1-MnnxcxisBPnSXQ-eff\@jetpack.xpi ${PKG}/${DESTDIR}/jid1-MnnxcxisBPnSXQ-eff\@jetpack.xpi
+install -Dm644 langpack-zh-CN\@icecat.mozilla.org.xpi ${PKG}/${DESTDIR}/langpack-zh-CN\@icecat.mozilla.org.xpi
+install -Dm644 {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi ${PKG}/${DESTDIR}/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
+
+mkdir -p /usr/lib64/icecat-${ICVER}/defaults/pref/
+install -Dm 644 user.js $PKG/usr/lib64/icecat-${ICVER}/defaults/pref/user.js
 
 mkdir -p $PKG/usr/share/$PRGNAM
 cat slack-desc > $PKG/usr/share/$PRGNAM/slack-desc
 cat icecat-hardened.info > $PKG/usr/share/$PRGNAM/icecat-hardened.info
 cat icecat-hardened.slackbuild > $PKG/usr/share/$PRGNAM/icecat-hardened.slackbuild
+install -Dm755 icecat-hardened.sh $PKG/usr/bin/icecat-hardened
 
-# Will copy the config files to the system's conf dir, then copied to user's config dir by doinst.sh.
-
-mkdir -p /usr/lib64/icecat-${ICVER}/defaults/pref/
-install -Dm 644 extensions.ini $PKG/usr/lib64/icecat-${ICVER}/defaults/pref/extensions.ini
-install -Dm 644 user.js $PKG/usr/lib64/icecat-${ICVER}/defaults/pref/user.js
 mkdir -p $PKG/install
 cat doinst.sh > $PKG/install/doinst.sh
+
 
 # Desktop integration
 mkdir -p $PKG/usr/share/applications

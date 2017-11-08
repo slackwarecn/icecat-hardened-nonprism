@@ -35,6 +35,25 @@ pkill -x icecat
 wait
 # cp /usr/lib/iceweasel/browser/defaults/preferences/iceweasel-branding.js /usr/lib/iceweasel/browser/defaults/preferences/icecat-branding.js
 # wait
+
+# Copying...$ICVER is the version number of icecat; $INIDIR is the profile directory.
+echo "Copying Hardened Prefs and Addons......"
+ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' | sed -n '1 p')
+INIDIR=$(find $HOME/.mozilla/icecat -type d -name "*.default")
+
+if [ "$INIDIR" = "" ]; then
+	echo "It seems you haven't start icecat for the first time. Please start it and close it, then you can run icecat-hardened. :)"
+	exit 1
+elif [ ! -e "$INIDIR"/user.js ]
+then
+	cp /usr/lib64/icecat-${ICVER}/defaults/pref/user.js ${INIDIR}
+	# It doesn't need to copy them. The addons works in the system-wide dir.
+#	cp usr/lib64/icecat-${ICVER}/browser/extensions/jid1-MnnxcxisBPnSXQ-eff\@jetpack.xpi ${INIDIR}/extensions/
+#	cp usr/lib64/icecat-${ICVER}/browser/extensions/langpack-zh-CN\@icecat.mozilla.org.xpi ${INIDIR}/extensions/
+#	cp usr/lib64/icecat-${ICVER}/browser/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi ${INIDIR}/extensions/
+#	cp usr/lib64/icecat-${ICVER}/browser/extensions/https-everywhere-eff\@eff.org.xpi ${INIDIR}/extensions/
+fi
+
 echo "Waking the Icecat..."
 
 # Trap cleaner function for Icecat exit cleaning
@@ -48,13 +67,6 @@ echo "Waking the Icecat..."
 
 /usr/bin/firejail --profile=/etc/firejail/icecat.profile /usr/bin/icecat 1>$HOME/.firejail-icecat.output 2>&1
 
-# Copying...$ICVER is the version number of icecat; $INIDIR is the profile directory.
-echo "Copying Hardened Prefs..."
-ICVER=$(ls /var/log/packages/icecat* | awk -F"-" '{ print $2 }' | sed -n '1 p')
-INIDIR=$(find $HOME/.mozilla/icecat -type d -name "*.default")
-
-cp /usr/lib64/icecat-${ICVER}/defaults/pref/user.js ${INIDIR}/
-cp /usr/lib64/icecat-${ICVER}/defaults/pref/extensions.ini ${INIDIR}/
 
 ## Exiting Icecat triggers the trap
 #trap finish EXIT

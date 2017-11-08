@@ -1,5 +1,5 @@
 PRGNAM="icecat-hardened-nonprism"
-VERSION="0.1.2"
+VERSION="0.3.0"
 HOMEPAGE=("https://git.parabola.nu/abslibre.git/tree/nonprism/iceweasel-hardened-preferences","https://wiki.parabola.nu/Nonprism")
 DOWNLOAD_x86_64="https://github.com/slackwarecn-slackbuilds/icecat-hardened-preferences/blob/master/icecat-hardened.sh"
 MD5SUM_x86_64="b6db25c6ac69d2c36913b38d26298bd4"
